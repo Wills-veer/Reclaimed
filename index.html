@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Reclaimed</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+  :root {
+    --green-dark: #1a2e1a;
+    --green-mid: #2d4a2d;
+    --green-light: #4a7a3a;
+    --amber: #c8842a;
+    --amber-light: #f0b050;
+    --red: #c0392b;
+    --blue: #2980b9;
+    --purple: #8e44ad;
+    --stone: #8a7a6a;
+    --text: #e8dcc8;
+    --text-dim: #a09080;
+    --bg: #0d1a0d;
+    --panel: rgba(13,26,13,0.92);
+    --border: rgba(100,140,80,0.4);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Text', Georgia, serif;
+    overflow: hidden;
+    width: 100vw; height: 100vh;
+  }
+
+  /* ── LOGIN SCREEN ── */
+  #login-screen {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(ellipse at center, #0d1f0d 0%, #000 100%);
+    z-index: 1000;
+    flex-direction: column;
+    gap: 0;
+  }
+  .login-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 30% 70%, rgba(30,60,20,0.6) 0%, transparent 50%),
+      radial-gradient(circle at 70% 30%, rgba(20,40,10,0.5) 0%, transparent 50%);
+  }
+  .login-trees {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 200px;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent, transparent 30px,
+        rgba(15,35,10,0.8) 30px, rgba(15,35,10,0.8) 50px
+      );
+    clip-path: polygon(
+      0% 100%, 2% 60%, 4% 80%, 6% 40%, 8% 65%, 10% 30%, 12% 55%, 14% 20%,
+      16% 50%, 18% 35%, 20% 60%, 22% 25%, 24% 55%, 26% 40%, 28% 70%,
+      30% 35%, 32% 60%, 34% 45%, 36% 20%, 38% 50%, 40% 30%, 42% 65%,
+      44% 40%, 46% 55%, 48% 25%, 50% 50%, 52% 35%, 54% 60%, 56% 45%,
+      58% 30%, 60% 55%, 62% 20%, 64% 45%, 66% 35%, 68% 60%, 70% 40%,
+      72% 65%, 74% 30%, 76% 55%, 78% 45%, 80% 20%, 82% 50%, 84% 35%,
+      86% 60%, 88% 40%, 90% 55%, 92% 30%, 94% 50%, 96% 65%, 98% 40%, 100% 60%, 100% 100%
+    );
+  }
+  .login-card {
+    position: relative; z-index: 2;
+    background: linear-gradient(160deg, rgba(20,38,20,0.97), rgba(10,20,10,0.97));
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 52px 60px;
+    text-align: center;
+    max-width: 420px; width: 90%;
+    box-shadow: 0 0 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(100,180,80,0.15);
+  }
+  .login-title {
+    font-family: 'Cinzel', serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--amber-light);
+    text-shadow: 0 0 30px rgba(200,130,40,0.6), 0 2px 8px rgba(0,0,0,0.8);
+    letter-spacing: 0.12em;
+    margin-bottom: 6px;
+    line-height: 1;
+  }
+  .login-sub {
+    font-style: italic;
+    color: var(--text-dim);
+    font-size: 1rem;
+    margin-bottom: 36px;
+    letter-spacing: 0.05em;
+  }
+  .login-lore {
+    font-size: 0.88rem;
+    color: #7a9070;
+    line-height: 1.7;
+    margin-bottom: 32px;
+    font-style: italic;
+    padding: 0 4px;
+  }
+  .login-input {
+    width: 100%;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-family: 'Crimson Text', serif;
+    font-size: 1.1rem;
+    padding: 12px 16px;
+    outline: none;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .login-input:focus { border-color: var(--amber); }
+  .login-input::placeholder { color: var(--text-dim); font-style: italic; }
+  .login-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #3d6e2a, #2d5020);
+    border: 1px solid rgba(100,160,70,0.5);
+    border-radius: 3px;
+    color: var(--amber-light);
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    letter-spacing: 0.12em;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .login-btn:hover { background: linear-gradient(135deg, #4d8a35, #3d6e28); box-shadow: 0 0 20px rgba(100,180,60,0.3); }
+  .login-status { margin-top: 14px; color: var(--amber); font-size: 0.9rem; font-style: italic; min-height: 20px; }
+
+  /* ── GAME CANVAS ── */
+  #canvas { display: block; position: fixed; top: 0; left: 0; cursor: crosshair; }
+
+  /* ── HUD ── */
+  #hud {
+    position: fixed; top: 0; left: 0; right: 0;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Stats bar */
+  #stats-bar {
+    position: fixed;
+    top: 14px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 14px; align-items: center;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 8px 18px;
+    pointer-events: none;
+  }
+  .stat {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.82rem; color: var(--text-dim);
+  }
+  .stat-label { font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.08em; }
+  .stat-bar-wrap { width: 70px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+  .stat-bar-fill { height: 100%; border-radius: 2px; transition: width 0.3s; }
+  .fill-hp { background: linear-gradient(90deg, #c0392b, #e74c3c); }
+  .fill-hunger { background: linear-gradient(90deg, #c8842a, #f0b050); }
+  .fill-thirst { background: linear-gradient(90deg, #2980b9, #3498db); }
+  .fill-stamina { background: linear-gradient(90deg, #27ae60, #2ecc71); }
+
+  #player-name-hud {
+    position: fixed; top: 14px; left: 14px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 3px; padding: 8px 14px;
+    font-family: 'Cinzel', serif; font-size: 0.85rem;
+    color: var(--amber-light); pointer-events: none;
+  }
+
+  #time-display {
+    position: fixed; top: 14px; right: 14px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 3px; padding: 8px 14px;
+    font-family: 'Cinzel', serif; font-size: 0.82rem;
+    color: var(--text-dim); pointer-events: none;
+  }
+
+  /* ── PANELS ── */
+  .panel {
+    position: fixed;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    z-index: 20;
+  }
+  .panel-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--amber);
+    padding: 10px 14px 6px;
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+  }
+
+  /* Chat */
+  #chat-panel {
+    bottom: 14px; left: 14px;
+    width: 310px;
+  }
+  #chat-messages {
+    height: 160px; overflow-y: auto;
+    padding: 8px 12px;
+    display: flex; flex-direction: column; gap: 3px;
+    scrollbar-width: thin; scrollbar-color: var(--green-mid) transparent;
+  }
+  .chat-msg { font-size: 0.83rem; line-height: 1.4; word-break: break-word; }
+  .chat-msg .cname { color: var(--amber); font-weight: 600; }
+  .chat-msg.system .cname { color: #6aaa50; }
+  #chat-input-wrap { display: flex; padding: 6px 8px; gap: 6px; border-top: 1px solid var(--border); }
+  #chat-input {
+    flex: 1; background: rgba(0,0,0,0.4); border: 1px solid var(--border);
+    border-radius: 2px; color: var(--text); font-family: 'Crimson Text', serif;
+    font-size: 0.9rem; padding: 5px 8px; outline: none;
+    pointer-events: all;
+  }
+  #chat-send {
+    background: var(--green-mid); border: 1px solid var(--border); border-radius: 2px;
+    color: var(--amber-light); font-family: 'Cinzel', serif; font-size: 0.7rem;
+    padding: 5px 8px; cursor: pointer; pointer-events: all; letter-spacing: 0.05em;
+  }
+  #chat-send:hover { background: var(--green-light); }
+
+  /* Inventory */
+  #inv-panel {
+    bottom: 14px; right: 14px;
+    width: 260px;
+  }
+  #inv-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 4px; padding: 10px;
+  }
+  .inv-slot {
+    aspect-ratio: 1;
+    background: rgba(0,0,0,0.35);
+    border: 1px solid rgba(100,140,80,0.25);
+    border-radius: 2px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-size: 0.65rem; color: var(--text-dim);
+    cursor: pointer; transition: border-color 0.15s;
+    pointer-events: all;
+    position: relative;
+    padding: 3px;
+    text-align: center;
+  }
+  .inv-slot:hover { border-color: var(--amber); color: var(--text); }
+  .inv-slot.equipped { border-color: var(--amber); background: rgba(200,130,40,0.15); }
+  .inv-slot .qty {
+    position: absolute; top: 2px; right: 4px;
+    font-size: 0.6rem; color: var(--amber-light); font-family: 'Cinzel', serif;
+  }
+  .inv-slot .item-icon { font-size: 1.1rem; line-height: 1; }
+
+  /* Crafting */
+  #craft-panel {
+    bottom: 14px; right: 290px;
+    width: 220px;
+    display: none;
+  }
+  #craft-list { padding: 8px; display: flex; flex-direction: column; gap: 4px; max-height: 220px; overflow-y: auto; }
+  .craft-item {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 2px; padding: 7px 9px;
+    cursor: pointer; transition: background 0.15s;
+    pointer-events: all;
+  }
+  .craft-item:hover { background: rgba(100,150,70,0.2); }
+  .craft-item .cname { font-size: 0.82rem; color: var(--amber-light); font-family: 'Cinzel', serif; }
+  .craft-item .cmats { font-size: 0.72rem; color: var(--text-dim); margin-top: 2px; font-style: italic; }
+  .craft-item.can-craft .cname { color: #7fe060; }
+
+  /* Mini-map */
+  #minimap-wrap {
+    position: fixed; top: 60px; right: 14px;
+    pointer-events: none;
+  }
+  #minimap {
+    width: 130px; height: 130px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    image-rendering: pixelated;
+  }
+
+  /* Hotbar */
+  #hotbar {
+    position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 5px;
+    pointer-events: all;
+  }
+  .hotbar-slot {
+    width: 50px; height: 50px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(100,140,80,0.35);
+    border-radius: 3px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-size: 0.6rem; color: var(--text-dim);
+    cursor: pointer; transition: all 0.15s;
+    position: relative;
+    text-align: center; padding: 3px;
+  }
+  .hotbar-slot:hover, .hotbar-slot.active { border-color: var(--amber); background: rgba(200,130,40,0.2); }
+  .hotbar-slot .item-icon { font-size: 1.3rem; }
+  .hotbar-slot .qty { position: absolute; top: 2px; right: 4px; font-size: 0.58rem; color: var(--amber-light); }
+  .hotkey { position: absolute; bottom: 2px; left: 4px; font-size: 0.55rem; color: rgba(255,255,255,0.3); }
+
+  /* Buttons */
+  #btn-craft-toggle {
+    position: fixed; right: 290px; bottom: 248px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 3px; color: var(--amber-light);
+    font-family: 'Cinzel', serif; font-size: 0.72rem; letter-spacing: 0.08em;
+    padding: 7px 12px; cursor: pointer; z-index: 25;
+    pointer-events: all;
+  }
+  #btn-craft-toggle:hover { background: rgba(100,150,70,0.3); }
+
+  /* Death screen */
+  #death-screen {
+    position: fixed; inset: 0;
+    display: none; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.85); z-index: 200;
+    flex-direction: column; gap: 16px;
+  }
+  #death-screen h1 {
+    font-family: 'Cinzel', serif; font-size: 3rem; color: var(--red);
+    text-shadow: 0 0 30px rgba(192,57,43,0.8);
+  }
+  #death-msg { color: var(--text-dim); font-style: italic; font-size: 1.1rem; }
+  #death-input {
+    background: rgba(0,0,0,0.6); border: 1px solid var(--border);
+    border-radius: 3px; color: var(--text); font-family: 'Crimson Text', serif;
+    font-size: 1rem; padding: 10px 16px; outline: none; width: 280px; text-align: center;
+  }
+  #death-btn {
+    background: linear-gradient(135deg, #6e2a2a, #501010);
+    border: 1px solid rgba(180,80,80,0.4);
+    border-radius: 3px; color: #f0a0a0;
+    font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 0.1em;
+    padding: 12px 32px; cursor: pointer;
+  }
+  #death-btn:hover { background: linear-gradient(135deg, #8e3a3a, #6e2020); }
+
+  /* Tooltip */
+  #tooltip {
+    position: fixed; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 3px; padding: 6px 10px; font-size: 0.8rem;
+    color: var(--text); pointer-events: none; z-index: 100; display: none;
+    max-width: 180px;
+  }
+
+  /* Notification */
+  #notifications {
+    position: fixed; top: 60px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; gap: 5px; z-index: 50;
+    pointer-events: none; align-items: center;
+  }
+  .notif {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 3px; padding: 6px 14px;
+    font-size: 0.82rem; color: var(--text);
+    animation: notif-in 0.3s ease, notif-out 0.4s 2.6s ease forwards;
+    font-style: italic;
+  }
+  @keyframes notif-in { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes notif-out { to { opacity:0; transform:translateY(-8px); } }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--green-mid); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-bg"></div>
+  <div class="login-trees"></div>
+  <div class="login-card">
+    <div class="login-title">THE RECLAIMED</div>
+    <div class="login-sub">A world without memory</div>
+    <div class="login-lore">
+      The forests swallowed everything. Cities are ruins under moss and vine.
+      You wake with nothing — no past, no map, no mercy.
+      Survive. Or don't. The world doesn't care.
+    </div>
+    <input class="login-input" id="name-input" placeholder="Enter your survivor name..." maxlength="24" />
+    <button class="login-btn" id="join-btn">ENTER THE WORLD</button>
+    <div class="login-status" id="login-status">Connecting to the server...</div>
+  </div>
+</div>
+
+<!-- GAME CANVAS -->
+<canvas id="canvas"></canvas>
+
+<!-- HUD -->
+<div id="player-name-hud">🌿 <span id="hud-name">—</span></div>
+
+<div id="stats-bar">
+  <div class="stat">
+    <span class="stat-label">HP</span>
+    <div class="stat-bar-wrap"><div class="stat-bar-fill fill-hp" id="bar-hp" style="width:100%"></div></div>
+  </div>
+  <div class="stat">
+    <span class="stat-label">FOOD</span>
+    <div class="stat-bar-wrap"><div class="stat-bar-fill fill-hunger" id="bar-hunger" style="width:100%"></div></div>
+  </div>
+  <div class="stat">
+    <span class="stat-label">WATER</span>
+    <div class="stat-bar-wrap"><div class="stat-bar-fill fill-thirst" id="bar-thirst" style="width:100%"></div></div>
+  </div>
+  <div class="stat">
+    <span class="stat-label">STAMINA</span>
+    <div class="stat-bar-wrap"><div class="stat-bar-fill fill-stamina" id="bar-stamina" style="width:100%"></div></div>
+  </div>
+</div>
+
+<div id="time-display">☀️ <span id="time-label">Dawn</span></div>
+
+<!-- MINI MAP -->
+<div id="minimap-wrap">
+  <canvas id="minimap"></canvas>
+</div>
+
+<!-- CHAT -->
+<div class="panel" id="chat-panel">
+  <div class="panel-title">📡 World Chat</div>
+  <div id="chat-messages"></div>
+  <div id="chat-input-wrap">
+    <input id="chat-input" placeholder="Say something..." maxlength="200" />
+    <button id="chat-send">SEND</button>
+  </div>
+</div>
+
+<!-- INVENTORY -->
+<div class="panel" id="inv-panel">
+  <div class="panel-title">🎒 Inventory</div>
+  <div id="inv-grid"></div>
+</div>
+
+<!-- CRAFTING TOGGLE -->
+<button id="btn-craft-toggle" onclick="toggleCraft()">⚒ CRAFT</button>
+
+<!-- CRAFTING -->
+<div class="panel" id="craft-panel">
+  <div class="panel-title">⚒ Crafting</div>
+  <div id="craft-list"></div>
+</div>
+
+<!-- HOTBAR -->
+<div id="hotbar"></div>
+
+<!-- DEATH SCREEN -->
+<div id="death-screen">
+  <h1>YOU DIED</h1>
+  <div id="death-msg">Killed by the wild.</div>
+  <input id="death-input" placeholder="New survivor name..." maxlength="24" />
+  <button id="death-btn">RISE AGAIN</button>
+</div>
+
+<!-- TOOLTIP -->
+<div id="tooltip"></div>
+
+<!-- NOTIFICATIONS -->
+<div id="notifications"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  THE RECLAIMED — CLIENT
+// ═══════════════════════════════════════════════
+
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const minimap = document.getElementById('minimap');
+const mctx = minimap.getContext('2d');
+
+let W = window.innerWidth, H = window.innerHeight;
+canvas.width = W; canvas.height = H;
+minimap.width = 130; minimap.height = 130;
+
+// Game state
+let ws = null;
+let myId = null;
+let myPlayer = null;
+let gameStarted = false;
+let worldMap = null;
+let WORLD_W = 200, WORLD_H = 200;
+const TILE_SIZE = 32;
+
+const players = new Map();
+const resources = new Map();
+const animals = new Map();
+const groundItems = new Map();
+let inventory = {};
+let equipped = null;
+let recipes = {};
+let timeOfDay = 0;
+
+// Camera
+let camX = 0, camY = 0;
+const LERP = 0.08;
+
+// Input
+const keys = {};
+let mouseX = 0, mouseY = 0;
+
+// Colors
+const TILE_COLORS = {
+  0: '#0d1a0d',
+  1: '#3d6e2a', // grass
+  2: '#1e4a18', // forest
+  3: '#1a3a5c', // water
+  4: '#4a3e32', // ruin
+  5: '#5a5048', // stone
+  6: '#2a2520', // cave
+  7: '#6e5a30', // village
+};
+const TILE_OVERLAY = {
+  2: '#0a2208',
+  6: '#150f0a',
+  7: '#3d3018',
+};
+
+const ITEM_ICONS = {
+  wood: '🪵', stone: '🪨', ore: '⛏️', meat: '🥩', hide: '🦮',
+  food: '🍖', water_flask: '🧴', rope: '🪢', iron_scrap: '🔩',
+  old_cloth: '🧶', arrow_bundle: '🏹', magic_crystal: '💎',
+  wooden_axe: '🪓', wooden_spear: '🗡️', bow: '🏹',
+  campfire: '🔥', shelter: '🏕️', bandage: '🩹', bandage_craft: '🩹',
+  arrow: '➶', iron_knife: '🔪',
+};
+
+const ITEM_NAMES = {
+  wood:'Wood', stone:'Stone', ore:'Ore', meat:'Meat', hide:'Hide',
+  food:'Food', water_flask:'Water', rope:'Rope', iron_scrap:'Iron Scrap',
+  old_cloth:'Old Cloth', arrow_bundle:'Arrows', magic_crystal:'Magic Crystal',
+  wooden_axe:'Wooden Axe', wooden_spear:'Spear', bow:'Bow',
+  campfire:'Campfire', shelter:'Shelter', bandage:'Bandage',
+  bandage_craft:'Bandage', arrow:'Arrow', iron_knife:'Iron Knife',
+};
+
+// ── WEBSOCKET ──
+function connect() {
+  const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  ws = new WebSocket(`${proto}//${location.host}`);
+
+  ws.onopen = () => {
+    document.getElementById('login-status').textContent = '✅ Connected! Enter your name and join.';
+    document.getElementById('join-btn').disabled = false;
+  };
+  ws.onclose = () => {
+    document.getElementById('login-status').textContent = '❌ Disconnected. Refresh to reconnect.';
+  };
+  ws.onerror = () => {
+    document.getElementById('login-status').textContent = '⚠️ Cannot reach server. Check connection.';
+  };
+
+  ws.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    handleMessage(msg);
+  };
+}
+
+function handleMessage(msg) {
+  switch (msg.type) {
+    case 'init':
+      myId = msg.pid;
+      WORLD_W = msg.worldW; WORLD_H = msg.worldH;
+      worldMap = msg.map;
+      recipes = msg.recipes;
+      timeOfDay = msg.tod || 0;
+      msg.players.forEach(p => players.set(p.id, p));
+      msg.resources.forEach(r => resources.set(r.id, r));
+      msg.animals.forEach(a => animals.set(a.id, a));
+      msg.groundItems.forEach(g => groundItems.set(g.id, g));
+      myPlayer = players.get(myId);
+      if (myPlayer) {
+        camX = myPlayer.x - W/2;
+        camY = myPlayer.y - H/2;
+      }
+      startGame();
+      break;
+
+    case 'player_join':
+      players.set(msg.player.id, msg.player);
+      break;
+    case 'player_leave':
+      players.delete(msg.id);
+      break;
+    case 'player_move':
+      const pm = players.get(msg.id);
+      if (pm) { pm.x = msg.x; pm.y = msg.y; }
+      break;
+    case 'player_respawn':
+      players.set(msg.player.id, msg.player);
+      break;
+
+    case 'chat':
+      addChat(msg.name, msg.text, msg.system);
+      break;
+
+    case 'stats':
+      if (myPlayer) {
+        myPlayer.hp = msg.hp; myPlayer.hunger = msg.hunger;
+        myPlayer.thirst = msg.thirst; myPlayer.stamina = msg.stamina;
+        updateStatBars();
+      }
+      break;
+
+    case 'inventory':
+      inventory = msg.inventory;
+      renderInventory();
+      renderCraft();
+      renderHotbar();
+      break;
+
+    case 'harvest_ok':
+      const res = resources.get(msg.rid);
+      if (res) res.hp = msg.hp;
+      notify(`+1 ${ITEM_NAMES[msg.item] || msg.item}`);
+      break;
+    case 'resource_depleted':
+      const rd = resources.get(msg.rid);
+      if (rd) rd.hp = 0;
+      break;
+    case 'resource_respawn':
+      resources.set(msg.resource.id, msg.resource);
+      break;
+
+    case 'item_picked':
+      groundItems.delete(msg.gid);
+      break;
+
+    case 'craft_ok':
+      notify(`✅ Crafted: ${ITEM_NAMES[msg.item] || msg.item}`);
+      break;
+    case 'craft_fail':
+      notify(`❌ ${msg.reason}`);
+      break;
+
+    case 'player_hit':
+      const ph = players.get(msg.id);
+      if (ph) ph.hp = msg.hp;
+      spawnFloating(msg.id, `-${msg.dmg}`, '#e74c3c');
+      break;
+    case 'animal_hit':
+      const ah = animals.get(msg.aid);
+      if (ah) ah.hp = msg.hp;
+      break;
+
+    case 'player_died':
+      const pd = players.get(msg.id);
+      if (pd) { pd.alive = false; pd.hp = 0; }
+      if (msg.id !== myId) notify(`💀 ${pd?.name || '?'} was killed by ${msg.killer}`);
+      break;
+
+    case 'animal_died':
+      const ad = animals.get(msg.aid);
+      if (ad) ad.alive = false;
+      notify(`+${msg.qty} ${ITEM_NAMES[msg.drop] || msg.drop}`);
+      break;
+    case 'animal_respawn':
+      animals.set(msg.animal.id, msg.animal);
+      break;
+    case 'animals_update':
+      msg.animals.forEach(a => {
+        const ex = animals.get(a.id);
+        if (ex) { ex.x = a.x; ex.y = a.y; ex.alive = a.alive; }
+      });
+      break;
+
+    case 'you_died':
+      showDeath(msg.killer);
+      break;
+
+    case 'respawn_ok':
+      myPlayer = msg.player;
+      players.set(myId, myPlayer);
+      inventory = {};
+      equipped = null;
+      renderInventory(); renderHotbar();
+      document.getElementById('death-screen').style.display = 'none';
+      updateStatBars();
+      notify('🌱 You have been reborn.');
+      break;
+
+    case 'time':
+      timeOfDay = msg.tod;
+      updateTimeDisplay();
+      break;
+
+    case 'attack_ok': break;
+    case 'equipped': break;
+  }
+}
+
+// ── START ──
+function startGame() {
+  document.getElementById('login-screen').style.display = 'none';
+  gameStarted = true;
+  document.getElementById('hud-name').textContent = myPlayer?.name || '?';
+  buildMinimapCache();
+  renderInventory();
+  renderCraft();
+  renderHotbar();
+  updateStatBars();
+  updateTimeDisplay();
+  requestAnimationFrame(gameLoop);
+}
+
+// ── JOIN ──
+document.getElementById('join-btn').addEventListener('click', () => {
+  const name = document.getElementById('name-input').value.trim() || `Survivor_${Math.floor(Math.random()*9999)}`;
+  if (!ws || ws.readyState !== WebSocket.OPEN) {
+    document.getElementById('login-status').textContent = '❌ Not connected yet...';
+    return;
+  }
+  ws.send(JSON.stringify({ type: 'join', name }));
+});
+document.getElementById('name-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('join-btn').click();
+});
+
+// ── MINIMAP CACHE ──
+let minimapCache = null;
+function buildMinimapCache() {
+  if (!worldMap) return;
+  const off = document.createElement('canvas');
+  off.width = WORLD_W; off.height = WORLD_H;
+  const octx = off.getContext('2d');
+  const imageData = octx.createImageData(WORLD_W, WORLD_H);
+  const MCOLORS = {
+    0:[13,26,13], 1:[50,110,42], 2:[24,58,20],
+    3:[26,58,92], 4:[74,62,50], 5:[90,80,72], 6:[42,37,32], 7:[110,90,48]
+  };
+  for (let y = 0; y < WORLD_H; y++) {
+    for (let x = 0; x < WORLD_W; x++) {
+      const t = worldMap[y][x] || 0;
+      const c = MCOLORS[t] || [13,26,13];
+      const i = (y*WORLD_W + x)*4;
+      imageData.data[i] = c[0]; imageData.data[i+1] = c[1];
+      imageData.data[i+2] = c[2]; imageData.data[i+3] = 255;
+    }
+  }
+  octx.putImageData(imageData, 0, 0);
+  minimapCache = off;
+}
+
+// ── FLOATING TEXT ──
+const floats = [];
+function spawnFloating(pid, text, color) {
+  const p = players.get(pid);
+  if (!p) return;
+  floats.push({ x: p.x, y: p.y - 20, text, color, life: 1.0 });
+}
+
+// ── GAME LOOP ──
+let lastTime = 0;
+let moveTimer = 0;
+function gameLoop(ts) {
+  const dt = Math.min((ts - lastTime) / 1000, 0.1);
+  lastTime = ts;
+
+  if (gameStarted && myPlayer && myPlayer.alive) {
+    // Movement
+    let dx = 0, dy = 0, speed = 180;
+    if (keys['w'] || keys['arrowup']) dy -= 1;
+    if (keys['s'] || keys['arrowdown']) dy += 1;
+    if (keys['a'] || keys['arrowleft']) dx -= 1;
+    if (keys['d'] || keys['arrowright']) dx += 1;
+    if (keys['shift']) speed = 300;
+    if (dx !== 0 || dy !== 0) {
+      const len = Math.hypot(dx, dy);
+      const nx = myPlayer.x + (dx/len)*speed*dt;
+      const ny = myPlayer.y + (dy/len)*speed*dt;
+      const tx = Math.floor(nx/TILE_SIZE), ty = Math.floor(ny/TILE_SIZE);
+      if (worldMap && worldMap[ty] && worldMap[ty][tx] !== 3) {
+        myPlayer.x = Math.max(16, Math.min((WORLD_W-1)*TILE_SIZE, nx));
+        myPlayer.y = Math.max(16, Math.min((WORLD_H-1)*TILE_SIZE, ny));
+      }
+      moveTimer += dt;
+      if (moveTimer > 0.05) {
+        if (ws?.readyState === 1) ws.send(JSON.stringify({ type: 'move', x: myPlayer.x, y: myPlayer.y }));
+        moveTimer = 0;
+      }
+    }
+    // Camera follow
+    camX += ((myPlayer.x - W/2) - camX) * LERP;
+    camY += ((myPlayer.y - H/2) - camY) * LERP;
+  }
+
+  // Floating text
+  for (let i = floats.length - 1; i >= 0; i--) {
+    floats[i].y -= 30 * dt;
+    floats[i].life -= dt;
+    if (floats[i].life <= 0) floats.splice(i, 1);
+  }
+
+  draw();
+  requestAnimationFrame(gameLoop);
+}
+
+// ── DRAW ──
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Sky color by time
+  const skyColor = getSkyColor();
+  ctx.fillStyle = skyColor;
+  ctx.fillRect(0, 0, W, H);
+
+  if (!worldMap) return;
+
+  ctx.save();
+  ctx.translate(-camX, -camY);
+
+  // Tiles
+  const startX = Math.max(0, Math.floor(camX / TILE_SIZE));
+  const startY = Math.max(0, Math.floor(camY / TILE_SIZE));
+  const endX = Math.min(WORLD_W, Math.ceil((camX + W) / TILE_SIZE));
+  const endY = Math.min(WORLD_H, Math.ceil((camY + H) / TILE_SIZE));
+
+  for (let ty = startY; ty < endY; ty++) {
+    for (let tx = startX; tx < endX; tx++) {
+      const t = worldMap[ty][tx];
+      const px = tx * TILE_SIZE, py = ty * TILE_SIZE;
+      ctx.fillStyle = TILE_COLORS[t] || '#0d1a0d';
+      ctx.fillRect(px, py, TILE_SIZE, TILE_SIZE);
+      if (TILE_OVERLAY[t]) {
+        ctx.fillStyle = TILE_OVERLAY[t];
+        if (t === 2) {
+          // Forest trees using a stable pseudorandom
+          const seed = tx * 7 + ty * 13;
+          const off1x = ((seed * 17) % 16) - 8;
+          const off1y = ((seed * 23) % 16) - 8;
+          drawTree(ctx, px + TILE_SIZE/2 + off1x, py + TILE_SIZE/2 + off1y, 9);
+        } else if (t === 6) {
+          // Cave entrance
+          ctx.fillStyle = '#150f0a';
+          ctx.beginPath();
+          ctx.ellipse(px + TILE_SIZE/2, py + TILE_SIZE/2, 10, 8, 0, 0, Math.PI*2);
+          ctx.fill();
+        } else if (t === 7) {
+          // Village structures
+          ctx.fillStyle = '#5a4828';
+          ctx.fillRect(px+4, py+4, 12, 12);
+          ctx.fillRect(px+17, py+10, 10, 8);
+        }
+      }
+      // Water animation
+      if (t === 3) {
+        const wave = Math.sin(Date.now()*0.001 + tx*0.5 + ty*0.3) * 0.08 + 0.15;
+        ctx.fillStyle = `rgba(40,120,180,${wave})`;
+        ctx.fillRect(px, py, TILE_SIZE, TILE_SIZE);
+      }
+      // Ruins detail
+      if (t === 4) {
+        const seed2 = tx * 11 + ty * 19;
+        if (seed2 % 3 === 0) {
+          ctx.fillStyle = 'rgba(60,50,40,0.6)';
+          ctx.fillRect(px+2, py+2, 8, 10);
+          ctx.fillRect(px+14, py+6, 12, 8);
+        }
+      }
+    }
+  }
+
+  // Ground items
+  groundItems.forEach(gi => {
+    if (!gi.alive) return;
+    if (gi.x < camX - 60 || gi.x > camX + W + 60) return;
+    if (gi.y < camY - 60 || gi.y > camY + H + 60) return;
+    ctx.save();
+    ctx.shadowColor = '#c8842a'; ctx.shadowBlur = 8;
+    ctx.font = '14px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(ITEM_ICONS[gi.type] || '📦', gi.x, gi.y + 5);
+    ctx.restore();
+  });
+
+  // Resources
+  resources.forEach(r => {
+    if (r.hp <= 0) return;
+    if (r.x < camX - 40 || r.x > camX + W + 40) return;
+    if (r.y < camY - 40 || r.y > camY + H + 40) return;
+    ctx.save();
+    if (r.type === 'tree') {
+      drawTree(ctx, r.x, r.y, 13);
+    } else if (r.type === 'rock') {
+      ctx.fillStyle = '#8a7a6a';
+      ctx.beginPath();
+      ctx.ellipse(r.x, r.y+2, 11, 9, 0, 0, Math.PI*2);
+      ctx.fill();
+      ctx.fillStyle = '#aaa098';
+      ctx.beginPath();
+      ctx.ellipse(r.x-2, r.y-1, 5, 4, -0.3, 0, Math.PI*2);
+      ctx.fill();
+    } else if (r.type === 'ore') {
+      ctx.fillStyle = '#7060a0';
+      ctx.beginPath();
+      ctx.ellipse(r.x, r.y, 9, 8, 0.3, 0, Math.PI*2);
+      ctx.fill();
+      ctx.fillStyle = '#b090e0';
+      ctx.beginPath();
+      ctx.ellipse(r.x-2, r.y-2, 4, 3, 0, 0, Math.PI*2);
+      ctx.fill();
+    }
+    ctx.restore();
+  });
+
+  // Animals
+  animals.forEach(a => {
+    if (!a.alive) return;
+    if (a.x < camX - 60 || a.x > camX + W + 60) return;
+    if (a.y < camY - 60 || a.y > camY + H + 60) return;
+    drawAnimal(ctx, a);
+  });
+
+  // Other players
+  players.forEach((p, id) => {
+    if (id === myId || !p.alive) return;
+    drawPlayer(ctx, p, false);
+  });
+
+  // My player
+  if (myPlayer && myPlayer.alive) {
+    drawPlayer(ctx, myPlayer, true);
+  }
+
+  // Floating text
+  floats.forEach(f => {
+    ctx.save();
+    ctx.globalAlpha = f.life;
+    ctx.font = 'bold 14px Crimson Text, serif';
+    ctx.fillStyle = f.color;
+    ctx.textAlign = 'center';
+    ctx.fillText(f.text, f.x, f.y);
+    ctx.restore();
+  });
+
+  // Night overlay
+  const nightAlpha = getNightAlpha();
+  if (nightAlpha > 0) {
+    const grad = ctx.createRadialGradient(
+      camX + W/2, camY + H/2, W*0.18,
+      camX + W/2, camY + H/2, W*0.7
+    );
+    grad.addColorStop(0, `rgba(0,0,20,0)`);
+    grad.addColorStop(1, `rgba(0,0,20,${nightAlpha})`);
+    ctx.fillStyle = grad;
+    ctx.fillRect(camX, camY, W, H);
+  }
+
+  ctx.restore();
+
+  // Draw minimap
+  drawMinimap();
+}
+
+function drawTree(ctx, x, y, size) {
+  ctx.fillStyle = '#1a3812';
+  ctx.beginPath();
+  ctx.moveTo(x, y - size);
+  ctx.lineTo(x + size*0.8, y + size*0.4);
+  ctx.lineTo(x - size*0.8, y + size*0.4);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#254d1a';
+  ctx.beginPath();
+  ctx.moveTo(x, y - size*1.1);
+  ctx.lineTo(x + size*0.6, y + size*0.1);
+  ctx.lineTo(x - size*0.6, y + size*0.1);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#5a3820';
+  ctx.fillRect(x-2, y + size*0.4, 4, size*0.5);
+}
+
+function drawAnimal(ctx, a) {
+  const ACOLORS = {
+    deer:'#c8842a', rabbit:'#d4b896', wolf:'#7a7a8a',
+    boar:'#8b4513', bear:'#5c4033', spirit_fox:'#a855f7',
+    bird:'#c8a040',
+  };
+  const col = ACOLORS[a.type] || '#888';
+  ctx.save();
+  if (a.type === 'spirit_fox') {
+    ctx.shadowColor = '#a855f7'; ctx.shadowBlur = 10;
+  }
+  // Body
+  ctx.fillStyle = col;
+  ctx.beginPath();
+  ctx.ellipse(a.x, a.y, 10, 7, 0, 0, Math.PI*2);
+  ctx.fill();
+  // Head
+  ctx.beginPath();
+  ctx.ellipse(a.x + 9, a.y - 2, 6, 5, 0, 0, Math.PI*2);
+  ctx.fill();
+  // Ears
+  ctx.fillStyle = col;
+  ctx.beginPath();
+  ctx.moveTo(a.x+8, a.y-6); ctx.lineTo(a.x+10, a.y-12); ctx.lineTo(a.x+13, a.y-6);
+  ctx.fill();
+  // Label
+  ctx.font = '9px Crimson Text, serif';
+  ctx.fillStyle = a.magic ? '#d0a0ff' : 'rgba(220,200,170,0.8)';
+  ctx.textAlign = 'center';
+  ctx.fillText(a.type, a.x, a.y - 16);
+  ctx.restore();
+}
+
+function drawPlayer(ctx, p, isMe) {
+  ctx.save();
+  if (isMe) {
+    ctx.shadowColor = p.color;
+    ctx.shadowBlur = 12;
+  }
+  // Shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
+  ctx.beginPath();
+  ctx.ellipse(p.x, p.y + 14, 10, 4, 0, 0, Math.PI*2);
+  ctx.fill();
+  // Body
+  ctx.fillStyle = p.color || '#6aaa50';
+  ctx.fillRect(p.x - 7, p.y - 8, 14, 16);
+  // Head
+  ctx.fillStyle = '#d4b896';
+  ctx.beginPath();
+  ctx.arc(p.x, p.y - 14, 8, 0, Math.PI*2);
+  ctx.fill();
+  // Eyes
+  ctx.fillStyle = '#222';
+  ctx.beginPath(); ctx.arc(p.x-3, p.y-15, 1.5, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(p.x+3, p.y-15, 1.5, 0, Math.PI*2); ctx.fill();
+  // Name
+  ctx.font = isMe ? 'bold 11px Cinzel, serif' : '10px Cinzel, serif';
+  ctx.fillStyle = isMe ? '#f0c060' : '#d0c0a0';
+  ctx.textAlign = 'center';
+  ctx.fillText(p.name, p.x, p.y - 26);
+  // HP bar
+  const barW = 30, barH = 3;
+  ctx.fillStyle = 'rgba(0,0,0,0.5)';
+  ctx.fillRect(p.x - barW/2, p.y - 23, barW, barH);
+  ctx.fillStyle = p.hp > 50 ? '#27ae60' : p.hp > 25 ? '#f39c12' : '#c0392b';
+  ctx.fillRect(p.x - barW/2, p.y - 23, barW * (p.hp/100), barH);
+  ctx.restore();
+}
+
+function drawMinimap() {
+  if (!minimapCache || !myPlayer) return;
+  mctx.clearRect(0, 0, 130, 130);
+  mctx.drawImage(minimapCache, 0, 0, WORLD_W, WORLD_H, 0, 0, 130, 130);
+  const sx = 130/WORLD_W, sy = 130/WORLD_H;
+  // Other players
+  players.forEach((p, id) => {
+    if (id === myId || !p.alive) return;
+    mctx.fillStyle = p.color || '#fff';
+    mctx.fillRect(p.x/TILE_SIZE*sx - 1.5, p.y/TILE_SIZE*sy - 1.5, 3, 3);
+  });
+  // Animals
+  animals.forEach(a => {
+    if (!a.alive) return;
+    mctx.fillStyle = a.magic ? '#a855f7' : 'rgba(200,160,80,0.7)';
+    mctx.fillRect(a.x/TILE_SIZE*sx - 0.8, a.y/TILE_SIZE*sy - 0.8, 1.6, 1.6);
+  });
+  // Me
+  mctx.fillStyle = '#f0c060';
+  const mx = myPlayer.x/TILE_SIZE*sx, my = myPlayer.y/TILE_SIZE*sy;
+  mctx.beginPath();
+  mctx.arc(mx, my, 3, 0, Math.PI*2);
+  mctx.fill();
+  // View rect
+  mctx.strokeStyle = 'rgba(240,192,96,0.4)';
+  mctx.lineWidth = 0.8;
+  mctx.strokeRect(camX/TILE_SIZE*sx, camY/TILE_SIZE*sy, W/TILE_SIZE*sx, H/TILE_SIZE*sy);
+}
+
+function getSkyColor() {
+  // tod: 0=dawn, 0.25=morning, 0.5=noon, 0.75=evening, 1=midnight
+  const t = timeOfDay;
+  if (t < 0.1) return `rgb(${lerp3(t/0.1, [15,10,30], [80,50,20])})`;
+  if (t < 0.25) return `rgb(${lerp3((t-0.1)/0.15, [80,50,20], [40,80,120])})`;
+  if (t < 0.6) return `rgb(${lerp3((t-0.25)/0.35, [40,80,120], [30,65,100])})`;
+  if (t < 0.75) return `rgb(${lerp3((t-0.6)/0.15, [30,65,100], [80,40,15])})`;
+  if (t < 0.9) return `rgb(${lerp3((t-0.75)/0.15, [80,40,15], [5,5,18])})`;
+  return 'rgb(5,5,18)';
+}
+function lerp3(t, a, b) {
+  return [
+    Math.round(a[0]+(b[0]-a[0])*t),
+    Math.round(a[1]+(b[1]-a[1])*t),
+    Math.round(a[2]+(b[2]-a[2])*t)
+  ].join(',');
+}
+function getNightAlpha() {
+  const t = timeOfDay;
+  if (t < 0.2 || t > 0.85) return 0.7;
+  if (t < 0.35) return Math.max(0, 0.7*(1-(t-0.2)/0.15));
+  if (t < 0.7) return 0;
+  if (t < 0.85) return 0.7*((t-0.7)/0.15);
+  return 0.7;
+}
+
+// ── TIME DISPLAY ──
+function updateTimeDisplay() {
+  const t = timeOfDay;
+  let label, icon;
+  if (t < 0.15) { label = 'Dawn'; icon = '🌅'; }
+  else if (t < 0.35) { label = 'Morning'; icon = '🌤️'; }
+  else if (t < 0.65) { label = 'Midday'; icon = '☀️'; }
+  else if (t < 0.78) { label = 'Dusk'; icon = '🌇'; }
+  else if (t < 0.9) { label = 'Evening'; icon = '🌆'; }
+  else { label = 'Night'; icon = '🌙'; }
+  document.getElementById('time-display').innerHTML = `${icon} <span id="time-label">${label}</span>`;
+}
+
+// ── STAT BARS ──
+function updateStatBars() {
+  if (!myPlayer) return;
+  document.getElementById('bar-hp').style.width = myPlayer.hp + '%';
+  document.getElementById('bar-hunger').style.width = myPlayer.hunger + '%';
+  document.getElementById('bar-thirst').style.width = myPlayer.thirst + '%';
+  document.getElementById('bar-stamina').style.width = myPlayer.stamina + '%';
+}
+
+// ── INVENTORY ──
+function renderInventory() {
+  const grid = document.getElementById('inv-grid');
+  grid.innerHTML = '';
+  const items = Object.entries(inventory).filter(([,q]) => q > 0);
+  if (items.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);font-style:italic;font-size:0.8rem;padding:14px 0;">Empty</div>';
+    return;
+  }
+  items.forEach(([item, qty]) => {
+    const slot = document.createElement('div');
+    slot.className = 'inv-slot' + (equipped === item ? ' equipped' : '');
+    slot.innerHTML = `<span class="item-icon">${ITEM_ICONS[item]||'📦'}</span><span style="font-size:0.58rem">${ITEM_NAMES[item]||item}</span><span class="qty">${qty}</span>`;
+    slot.title = ITEM_NAMES[item] || item;
+    slot.addEventListener('click', () => handleItemClick(item));
+    slot.addEventListener('contextmenu', e => { e.preventDefault(); handleItemUse(item); });
+    grid.appendChild(slot);
+  });
+}
+
+function handleItemClick(item) {
+  const weapons = ['wooden_axe','wooden_spear','bow','iron_knife'];
+  if (weapons.includes(item)) {
+    equipped = equipped === item ? null : item;
+    if (ws?.readyState === 1) ws.send(JSON.stringify({ type: 'equip', item: equipped }));
+    renderInventory(); renderHotbar();
+    notify(equipped ? `🗡️ Equipped: ${ITEM_NAMES[item]}` : 'Unequipped.');
+  } else {
+    handleItemUse(item);
+  }
+}
+
+function handleItemUse(item) {
+  if (['food','meat','water_flask','bandage','bandage_craft'].includes(item)) {
+    if (ws?.readyState === 1) ws.send(JSON.stringify({ type: 'use_item', item }));
+  }
+}
+
+// ── HOTBAR ──
+const HOTBAR_ITEMS = ['wooden_axe','wooden_spear','iron_knife','bow','bandage','food','water_flask'];
+function renderHotbar() {
+  const bar = document.getElementById('hotbar');
+  bar.innerHTML = '';
+  HOTBAR_ITEMS.forEach((item, i) => {
+    const qty = inventory[item] || 0;
+    const slot = document.createElement('div');
+    slot.className = 'hotbar-slot' + (equipped === item ? ' active' : '');
+    slot.innerHTML = `<span class="item-icon">${ITEM_ICONS[item]||'📦'}</span><span style="font-size:0.55rem;color:var(--text-dim)">${ITEM_NAMES[item]}</span>${qty > 0 ? `<span class="qty">${qty}</span>` : ''}<span class="hotkey">${i+1}</span>`;
+    slot.style.opacity = qty > 0 ? '1' : '0.35';
+    if (qty > 0) slot.addEventListener('click', () => handleItemClick(item));
+    bar.appendChild(slot);
+  });
+}
+
+// ── CRAFTING ──
+function toggleCraft() {
+  const p = document.getElementById('craft-panel');
+  p.style.display = p.style.display === 'block' ? 'none' : 'block';
+  if (p.style.display === 'block') renderCraft();
+}
+
+function renderCraft() {
+  const list = document.getElementById('craft-list');
+  list.innerHTML = '';
+  Object.entries(recipes).forEach(([item, mats]) => {
+    const canCraft = Object.entries(mats).every(([m,n]) => (inventory[m]||0) >= n);
+    const div = document.createElement('div');
+    div.className = 'craft-item' + (canCraft ? ' can-craft' : '');
+    const matsStr = Object.entries(mats).map(([m,n]) => `${n}x ${ITEM_NAMES[m]||m}`).join(', ');
+    div.innerHTML = `<div class="cname">${ITEM_ICONS[item]||''} ${ITEM_NAMES[item]||item}</div><div class="cmats">${matsStr}</div>`;
+    if (canCraft) div.addEventListener('click', () => {
+      if (ws?.readyState === 1) ws.send(JSON.stringify({ type: 'craft', item }));
+    });
+    list.appendChild(div);
+  });
+}
+
+// ── CHAT ──
+document.getElementById('chat-send').addEventListener('click', sendChat);
+document.getElementById('chat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendChat();
+  e.stopPropagation();
+});
+document.getElementById('chat-input').addEventListener('keyup', e => e.stopPropagation());
+
+function sendChat() {
+  const inp = document.getElementById('chat-input');
+  const text = inp.value.trim();
+  if (!text || !ws || ws.readyState !== 1) return;
+  ws.send(JSON.stringify({ type: 'chat', text }));
+  inp.value = '';
+}
+
+function addChat(name, text, system) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg' + (system ? ' system' : '');
+  div.innerHTML = `<span class="cname">${name}:</span> ${text}`;
+  msgs.appendChild(div);
+  while (msgs.children.length > 60) msgs.removeChild(msgs.firstChild);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ── NOTIFICATIONS ──
+function notify(msg) {
+  const container = document.getElementById('notifications');
+  const el = document.createElement('div');
+  el.className = 'notif';
+  el.textContent = msg;
+  container.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+// ── DEATH ──
+function showDeath(killer) {
+  const ds = document.getElementById('death-screen');
+  document.getElementById('death-msg').textContent = `You were killed by: ${killer}`;
+  document.getElementById('death-input').value = `Survivor_${Math.floor(Math.random()*9999)}`;
+  ds.style.display = 'flex';
+  if (myPlayer) myPlayer.alive = false;
+}
+
+document.getElementById('death-btn').addEventListener('click', () => {
+  const name = document.getElementById('death-input').value.trim() || `Survivor_${Math.floor(Math.random()*9999)}`;
+  if (ws?.readyState === 1) ws.send(JSON.stringify({ type: 'respawn', name }));
+});
+
+// ── INTERACTION (click to harvest/attack) ──
+canvas.addEventListener('click', (e) => {
+  if (!myPlayer || !myPlayer.alive || !gameStarted) return;
+  const wx = e.clientX + camX;
+  const wy = e.clientY + camY;
+
+  // Check ground items
+  for (const [id, gi] of groundItems) {
+    if (!gi.alive) continue;
+    if (Math.hypot(gi.x - wx, gi.y - wy) < 24) {
+      if (Math.hypot(gi.x - myPlayer.x, gi.y - myPlayer.y) < 80) {
+        ws.send(JSON.stringify({ type: 'pickup', gid: id }));
+        return;
+      } else { notify('Too far away.'); return; }
+    }
+  }
+
+  // Check animals
+  for (const [id, a] of animals) {
+    if (!a.alive) continue;
+    if (Math.hypot(a.x - wx, a.y - wy) < 20) {
+      if (Math.hypot(a.x - myPlayer.x, a.y - myPlayer.y) < 100) {
+        if (!equipped) { notify('⚔️ Equip a weapon first!'); return; }
+        ws.send(JSON.stringify({ type: 'attack_animal', aid: id }));
+        return;
+      } else { notify('Too far away.'); return; }
+    }
+  }
+
+  // Check other players (attack)
+  for (const [id, p] of players) {
+    if (id === myId || !p.alive) continue;
+    if (Math.hypot(p.x - wx, p.y - wy) < 20) {
+      if (Math.hypot(p.x - myPlayer.x, p.y - myPlayer.y) < 90) {
+        if (!equipped) { notify('⚔️ Equip a weapon first!'); return; }
+        if (confirm(`Attack ${p.name}?`)) ws.send(JSON.stringify({ type: 'attack_player', tid: id }));
+        return;
+      }
+    }
+  }
+
+  // Check resources
+  for (const [id, r] of resources) {
+    if (r.hp <= 0) continue;
+    if (Math.hypot(r.x - wx, r.y - wy) < 20) {
+      if (Math.hypot(r.x - myPlayer.x, r.y - myPlayer.y) < 90) {
+        if (r.type === 'tree' && !equipped) { notify('🪓 Equip an axe first!'); return; }
+        ws.send(JSON.stringify({ type: 'harvest', rid: id }));
+        return;
+      } else { notify('Too far to harvest.'); return; }
+    }
+  }
+});
+
+// ── KEYBOARD ──
+window.addEventListener('keydown', e => {
+  keys[e.key.toLowerCase()] = true;
+  // Hotkeys
+  const n = parseInt(e.key);
+  if (n >= 1 && n <= 7) {
+    const item = HOTBAR_ITEMS[n-1];
+    if (inventory[item] > 0) handleItemClick(item);
+  }
+  if (e.key.toLowerCase() === 'c') toggleCraft();
+  if (e.key === 'Enter' && document.getElementById('chat-input') !== document.activeElement) {
+    document.getElementById('chat-input').focus();
+  }
+});
+window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+canvas.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+// ── RESIZE ──
+window.addEventListener('resize', () => {
+  W = window.innerWidth; H = window.innerHeight;
+  canvas.width = W; canvas.height = H;
+});
+
+// ── START ──
+connect();
+</script>
+</body>
+</html>
